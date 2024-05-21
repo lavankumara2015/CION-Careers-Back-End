@@ -26,13 +26,136 @@ app.listen(3004, () => {
   console.log("Server is running at loc");
 });
 
-//Database Connection
+
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "122000",
-  database: "cion_careers",
+  host: "bxwdallaour5ndfjyhra-mysql.services.clever-cloud.com",
+  database: "bxwdallaour5ndfjyhra",
+  user: "uykqbfs93zredemh",
+  password: "NawmScGm3OBBPMRUCfVw",
+  port: 3306,
 });
+
+
+
+
+
+// const createTablesQuery = `CREATE TABLE IF NOT EXISTS admin (
+//   id INT AUTO_INCREMENT PRIMARY KEY,
+//   hiring_manager_name VARCHAR(50),
+//   hiring_manager_email VARCHAR(50),
+//   hiring_manager_password VARCHAR(50),
+//   department VARCHAR(50)
+// )`;
+
+
+// const createTablesQuery = `CREATE TABLE IF NOT EXISTS applicant_credentials (
+//   applicant_id int auto_increment primary key,
+//   applicant_name varchar(50),
+//   applicant_email varchar(50),
+//   applicant_password Text,
+//   applicant_cv text
+// )`;
+
+
+// const createTablesQuery = `CREATE TABLE IF NOT EXISTS careers (
+//   role_id INT AUTO_INCREMENT PRIMARY KEY,
+//        department VARCHAR(255),
+//        role VARCHAR(255),
+//      location VARCHAR(255),
+//      experience VARCHAR(255),
+//        Eligibility VARCHAR(255),
+//        skill_required TEXT,
+//         job_description TEXT,
+//         hiring_manager VARCHAR(255),
+//         hiring_manager_email VARCHAR(255),
+//         role_icon_url TEXT,
+//        status VARCHAR(50) DEFAULT 'Open'
+// )`;
+
+
+// const createTablesQuery = `CREATE TABLE IF NOT EXISTS applicant_details (
+//   role_id INT NOT NULL,
+//      role VARCHAR(255) NOT NULL,
+//     department VARCHAR(255) NOT NULL,
+//      first_name VARCHAR(100) NOT NULL,
+//      last_name VARCHAR(100) NOT NULL,
+//      mobile_number VARCHAR(13) NOT NULL,
+//      years_of_experience INT NOT NULL,
+//      DOB TEXT,
+//      highest_graduation VARCHAR(100) NOT NULL,
+//      graduation_year YEAR NOT NULL,
+//      CGPA DECIMAL(4,2),
+//     current_address TEXT NOT NULL,
+//     reason_for_applying TEXT NOT NULL,
+//     applicant_email VARCHAR(255) NOT NULL,
+//     status VARCHAR(50) DEFAULT 'Applied'
+// )`;
+
+
+// connection.query(createTablesQuery, (error, results, fields) => {
+//  if (error) {
+//    console.error("Error creating admin table: " + error.stack);
+//    return;
+//  }
+//  console.log("Table admin created successfully");
+// });
+
+
+  // const createTablesQuery = `
+  //  SELECT * FROM users
+  // `;
+  // connection.query(createTablesQuery, (error, results, fields) => {
+  //   if (error) {
+  //     console.error("Error creating allleads table: " + error.stack);
+  //     return;
+  //   }
+  //   console.log("Table users  created successfully");
+  //   console.log(results);
+  // });
+
+
+//   const insertQuery = `INSERT INTO admin (hiring_manager_name, hiring_manager_email, department, hiring_manager_password) VALUES
+//   ('Veera Vardhan', 'veera123@gmail.com', 'Human Resources', '12345'),
+//   ('Ruthwik', 'Ruthwik1234@gmail.com', 'Digital team', '12345'),
+//   ('Nishant', 'Nishant1234@gmail.com', 'Human Resources', '12345')`;
+
+
+// const insertQuery = `INSERT INTO applicant_credentials (applicant_id,applicant_name,applicant_email,applicant_password,applicant_cv) VALUES (1,'Lavan kumar Adicherla','lavankumara2015@gmail.com','$2b$10$jHbHkRDGU/njrfcjJQS62ejaBvNPRQBVU3VS2baON8DdAYh.ZhV2S','C:\\fakepath\\1-MB (2).pdf')`;
+
+
+// const insertQuery = `INSERT INTO careers (role_id,department,role,location,experience,Eligibility,skill_required,job_description,hiring_manager,hiring_manager_email,role_icon_url,status) 
+// VALUES (1,'Accounts/Financial','Accounts Executive','Hyderabad','2-5 years ','B.com/Mcom/MBA','<ul><li>Proven working experience as Accounting Executive, Accounting Supervisor or Finance Manager.</li><li>Advanced computer skills on MS Office, accounting software like Tally and databases.</li><li>Proven knowledge of bookkeeping and accounting principles, practices, standards, laws and regulations.</li><li>Attention to detail and accuracy.</li><li>Ability to direct and supervise.</li><li>Ability travel across centers</li><li>Ability to prepare MIS reports</li></ul>','<ul><li>Manage and oversee the daily accounts operations.</li><li>Invoice preparation according to MOU with partner hospitals</li><li>Cash receipts, General ledger, Payroll and utilities, Treasury, budgeting</li><li>Vendor bills verification and process for payments</li><li>Daily collection follow-up with centers and reconciliation with books</li><li>Bank reconciliations and passing daily receipts and payment entries</li><li>Handling Accounts Receivables and Payables ; Preparation of aging statements</li><li>Monthly tax returns/filing.</li><li>Monitor and analyse accounting data and produce financial reports or statements</li><li>Coordinate and complete annual audits</li><li>Meet financial accounting objectives</li><li>Establish and maintain physical files and records to document transactions</li><li>Coordinate with partner hospitals and follow up regarding receivables.</li><li>Month and end-year process, Accounts payable/receivable</li><li>Coordination with internal departments for smooth flow of work</li></ul>','Veera Vardhan','veera123@gmail.com','sales-logo.webp','Open'),
+//  (2,'Operations','Cancer Coach','Hyderabad','1-3 years','MBA – Hospital Management / Hospital Administration Bachelor of Dental Sciences ; Doctor of Pharmacy','<ul><li>Knowledge of medical terminologies, patient counselling and computer skills is desired.</li><li>Excellent communication skills, patience and energy along with ability to converse fluently in 2-3 languages is a must (Telugu,&nbsp;English, Hindi).</li><li>Persuasion, Verbal Communication, Health Promotion and Maintenance, Patient Services, Building Relationships, Resolving Conflict, Coordination, Listening, Scheduling, Teamwork.</li><li>Ability to learn quicklyand handle multiple tasks whenever required.</li></ul>','<ul><li>Promotes patient\'s independence by establishing patient care goals; teaching patients, and families to understand conditions, medications, and self-care skills and answering questions.</li><li>Maintain a cooperative relationship amongst health care team members by communicating information; responding to requests; building rapport; participating in team problem-solving methods.</li><li>Counsel clients and patients, individually and in group sessions, to assist in overcoming dependencies, adjusting to life, and making changes</li><li>Knowledge management and support to the care team.&nbsp;</li></ul>','Veera Vardhan','veera123@gmail.com','coach-logo.webp','Open'),
+//  (3,'Digital team','Content Writing Intern','Hyderabad','0-1 years','B.Tech','<ul><li>Excellent English writing skills, with a strong command of grammar, spelling, and punctuation.</li><li>Ability to learn on the job and adapt quickly to new tasks and challenges.</li><li>Self-motivated and able to work independently, while also collaborating effectively with team members.</li><li>Proficiency in prompting and utilizing AI platforms, such as ChatGPT, to enhance content creation.</li><li>Strong research skills to validate data found on the internet and AI platforms.</li><li>Effective communication skills to interact with doctors, staff, and other stakeholders.</li><li>Detail-oriented with a focus on accuracy and delivering high-quality content.</li></ul>','<ul><li>Identify keywords: Conduct research to find underexplored keywords and incorporate them into valuable articles.</li><li>White paper writing: Collaborate with doctors and staff to create insightful white papers on our cutting-edge procedures.</li><li>Communication template creation: Develop effective communication templates for various channels.</li><li>Documentation: Work with internal stakeholders to document processes and best practices.</li></ul>','Ruthwik','Ruthwik1234@gmail.com','Intern-logo.webp','Open'),
+//  (4,'Pharmacy','Clinical Pharmacist','Hyderabad','2-4 years ','Pharma D/B Pharm/M Pharm','<ul><li>Good communication skills, patience and energy along with ability to converse fluently in English, Hindi and Telugu is a must.</li><li>Should possess ability to persuade through good communication skills.&nbsp;</li></ul><p>Ability to work closely with doctors and understand their needs from the&nbsp;</p>','<ul><li>Documents activities consistent with clinic Guidelines and maintains a safe and clean working environment</li><li>Understands oncology medications and can dispense drugs as prescribed by the treating oncologist</li><li>Demonstrates competency in maintaining computerized medication profiles and processing medication lists for cart filling and IV admixtures.</li><li>Maintains the medications in alphabetical order, by category, by generic name wise and by brand.</li><li>Coordinate with the drug distributor to ensure ordering of complex Oncology medications as needed by the patients</li><li>Maintains the operation of the unit dose area and drug mixing room. Competent dispensing medications per procedures and laws.</li><li>Evaluates appropriateness of medication orders for patients of all ages, diseases, and conditions. Responds to inappropriate orders appropriately.</li><li>Provides therapeutic drug monitoring education, provides drug information to patients and provides patient education as identified and as requested.</li><li>Participates in clinical and interdisciplinary patient care team as directed by center head</li><li>Has a good idea of oncology drug market, their adverse reactions and special needs according to patient needs.&nbsp;</li></ul>','Nishant','Nishant1234@gmail.com','nutritionist-logo.webp','Open'),
+//  (5,'Marketing ','Marketing Executive (male)','Hyderabad','0-3 years min','B.Tech','<ul><li>Knowledge of medical terminologies.</li><li>Good sales performance track record.</li><li>Excellent communication skills, patience, and energy.</li><li>Ability to communicate fluently in 2-3 languages is a must.</li><li>Should have strong integrity and leadership traits.</li><li>Building relationships, resolving conflict, collaboration, scheduling, teamwork.</li></ul><p>Ability to learn quickly and handle multiple tasks whenever required.</p>','<ul><li>Develop network throughout hospitals, clinics, polyclinics, and other healthcare providers in their allotted catchment area.</li><li>Regular follow up with specialist and hospital doctors etc.</li><li>Arranging appointments with doctors which may include pre-arranged appointments or regular calling.</li><li>Facilitating medical conferences.</li><li>Developing growth strategies and plans for increasing opportunities.</li><li>Identify and develop new and existing referral sources to develop successful referring relationships.</li><li>Conducting marketing activities to increase brand awareness and gain new doctor relationships.</li><li>Maintain marketing collateral inclusive of presentation templates.</li><li>Support, facilitate, and implement a local marketing plan.</li><li>Process and develop requests, monthly reports, and process invoices.</li><li>Keep up to date with the key research activities of the organization.</li><li>Develop in-depth knowledge of services provided and value proposition.</li></ul><p>Following industry trends locally and internationally&nbsp;</p>','Nishant','Nishant1234@gmail.com','facilitiesboy-logo.webp','Open'),
+//  (6,'Nursing','Nurse','Hyderabad','1-3 years in Clinical Practice','Graduation, BSc/MSc/GNM (Nursing)','<ul><li>Experience in nursing for critical care patients.</li><li>Must possess the abilities to work independently, demonstrate effective time management skills, and to prioritise effectively.</li><li>Excellent communication and interpersonal skills with all levels of internal and external customers necessary.Ability to converse fluently in 2-3 languages is a must (Telugu, English, Hindi).</li><li>Plan, organise, and carry out nursing activities while understanding physical, mental and emotional state of the patient.</li><li>Attends staff meetings and in-service training sessions for continues education.</li></ul><p>Individual must be self-motivated/self-directed, patience and energy.</p>','<ul><li>Oncology Nurse for cancer patients with the goal of helping patients overcome health care system barriers and facilitate timely access to home or centre based services.</li><li>Visit and observe assigned patients and their families to discover, define, act on and/or report causes of health problems.</li><li>Demonstrated excellence in nursing assessment, home care planning and problem-solving skills.</li><li>Must be able to lift or transfer patients, medical supplies, and equipment.</li><li>Work effectively with patients and families to assist them in satisfactory solution of health problems.</li><li>Ability to deal effectively with change within the unstructured nature of health coaching and remain focused and perform other related work as required.</li></ul><p>Coordinate with doctors and related department leads to plan administrative activities. Oncology home care discharge planning experience preferred.</p>','Veera Vardhan','veera123@gmail.com','nurse-logo.webp','Open'),
+//  (7,'Psychologist','Clinical Psychonoclogist','Hyderabad','1-3 years in Clinical Practice','MSc Health Psychology','<ul><li>Cumulative 1-2 years experience of counselling specialpopulations</li><li>Preferred health coach experience</li><li>Demonstrate strong intrest towards treating oncology patients</li><li>Effective interviewing and counselling skills&nbsp;</li><li>Able to converse in Telugu, Hindi and English</li></ul><p>Ability to work effectively as part of an integrated team</p>','<ul><li>Identify relevant signs and symptoms of psychological conditions in cancer paitents in order to comprehensively assess, diagnose, and manage the patient’s condition</li><li>Diagnose and develop treatment plans in collaboration with the Doctor Panel and medical coaches that reflects the standard of practice within the organisation</li><li>Provide psychotherapy, counseling education, cognitive, retraining, behavior management and / or crisis intervention as needed to treat the patient’s condition</li><li>Write clinical reports to adequately capture the patient condition and following treatment plan</li><li>Provide patient’s relatives/caregivers with information concerning the management of the patient at home</li><li>Give input and help to implement new programs for the treatment, training or rehabilitation of cancer patients within the organisation</li></ul><p>Review literature for trends in clinical and non-clinical psychological health issues</p>','Veera Vardhan','veera123@gmail.com','psychologist-logo.webp','Open'),
+//  (8,'Screening','Screening Coach ','Hyderabad','1-3 years','Degree in Business, Social Work, Public ','<ul><li>Excellent communication skills, patience and enthusiasm along with ability to converse fluently in 2-3 languages is a must (Telugu, English and Hindi).&nbsp;</li><li>Knowledge of basic medical terminologies</li><li>Adept computer skills (MS Office) is required.&nbsp;</li><li>Comfortable with making regular calls to screening participants and potential partner camp hosts</li><li>Comfortable with travelling in and around Hyderabad</li><li>Verbal communication, health promotion and maintenance, patient services, building relationships, resolving conflict, coordination, listening, scheduling and teamwork.&nbsp;</li><li>Ability to learn quickly and handle multiple tasks whenever required.&nbsp;</li></ul><p>Track record of good sales performance&nbsp;</p>','<ul><li>Assist the Screening Manager in developing and implementing an integrated screening program for breast, oral and cervical cancers.&nbsp;</li><li>Help organize and execute regular screening camps in Hyderabad North, South, West and Vizag areas. Expectation is to organize 3 camps per week in Hyderabad and 3 camps per week in Vizag.</li><li>Manage electronic documentation and billing via Salesforce of all screening participants.&nbsp;</li><li>Maintain a cooperative relationship amongst health care team members; building rapport and participating in team problem-solving methods.&nbsp;</li><li>Provide knowledge management and support to the clinical care and administrative teams.</li><li>Work closely with screening manager to develop eye-catching and effective marketing materials, collateral and educational materials for the screening program.&nbsp;</li><li>Follow-up with participants post-event to schedule consultations and diagnostics.</li><li>Ensure that screening camps are conducting ethically and with high quality.</li><li>Developing growth strategies and plans for increasing opportunities.</li><li>Supporting and conducting marketing activities to increase brand awareness&nbsp;</li><li>Process and develop monthly reports on activities and outcomes</li><li>Keep up-to-date with the key research activities of the organization.</li><li>Develop in-depth knowledge of services provided and value proposition.</li></ul><p>Follow and setindustry trends locally and internationally as appropriate</p>','Veera Vardhan','veera123@gmail.com','coach-logo.webp','Open')`;
+
+// const insertQuery = `INSERT INTO applicant_details (role_id,role,department,first_name,last_name,mobile_number,years_of_experience,DOB,highest_graduation,graduation_year,CGPA,current_address,reason_for_applying,applicant_email,status) VALUES
+// (1,'Accounts Executive','Accounts/Financial','Lavan kumar','Adicherla','8096255759',1,'1999-01-12','b.tech',2024,80.00,'Sircilla','qqqqqqqqqq','lavankumara2015@gmail.com','Rejected'),
+// (1,'Accounts Executive','Accounts/Financial','Lavan kumar','Adicherla','8096255759',1,'1999-01-12','b.tech',2024,80.00,'Sircilla','qqqqqqqqqq','lavankumara2015@gmail.com','Rejected'),
+// (8,'Screening Coach ','Screening','Lavan kumar','Adicherla','8096255759',1,'1999-01-12','b.tech',2024,80.00,'Sircilla','qqqqqqqqqqqqq','lavankumara2015@gmail.com','Applied'),
+// (7,'Clinical Psychonoclogist','Psychologist','Lavan kumar','Adicherla','8096255759',1,'1999-01-12','b.tech',2024,80.00,'Sircilla','qqqqqqqqqqq','lavankumara2015@gmail.com','Applied'),
+// (6,'Nurse','Nursing','Lavan kumar','Adicherla','8096255759',1,'1999-01-12','b.tech',2024,80.00,'Sircilla','qqqqqqqqqqqqqqqq','lavankumara2015@gmail.com','Applied');`
+
+// connection.query(insertQuery, (error, results, fields) => {
+//   if (error) {
+//     console.error("Error inserting data: " + error.stack);
+//     return;
+//   }
+//   console.log("Data inserted successfully");
+// });
+
+
+//Database Connection
+// const connection = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "122000",
+//   database: "cion_careers",
+// });
 
 connection.connect((err) => {
   if (err) {
