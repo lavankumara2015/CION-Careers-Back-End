@@ -37,8 +37,6 @@ const connection = mysql.createConnection({
 
 
 
-
-
 // const createTablesQuery = `CREATE TABLE IF NOT EXISTS admin (
 //   id INT AUTO_INCREMENT PRIMARY KEY,
 //   hiring_manager_name VARCHAR(50),
@@ -56,22 +54,20 @@ const connection = mysql.createConnection({
 //   applicant_cv text
 // )`;
 
-
 // const createTablesQuery = `CREATE TABLE IF NOT EXISTS careers (
-//   role_id INT AUTO_INCREMENT PRIMARY KEY,
-//        department VARCHAR(255),
-//        role VARCHAR(255),
-//      location VARCHAR(255),
-//      experience VARCHAR(255),
-//        Eligibility VARCHAR(255),
-//        skill_required TEXT,
+//        role_id INT AUTO_INCREMENT PRIMARY KEY,
+//         department VARCHAR(255),
+//         role VARCHAR(255),
+//         location VARCHAR(255),
+//         experience VARCHAR(255),
+//         Eligibility VARCHAR(255),
+//         skill_required TEXT,
 //         job_description TEXT,
 //         hiring_manager VARCHAR(255),
 //         hiring_manager_email VARCHAR(255),
 //         role_icon_url TEXT,
 //        status VARCHAR(50) DEFAULT 'Open'
 // )`;
-
 
 // const createTablesQuery = `CREATE TABLE IF NOT EXISTS applicant_details (
 //   role_id INT NOT NULL,
@@ -164,6 +160,7 @@ connection.connect((err) => {
   }
   console.log("Connected to database as id " + connection.threadId);
 });
+
 
 //Middleware (userAuthentication)
 const userAuthentication = (request, response, next) => {
