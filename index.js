@@ -43,8 +43,8 @@ const connection = mysql.createConnection({
 //   id INT AUTO_INCREMENT PRIMARY KEY,
 //   hiring_manager_name VARCHAR(50),
 //   hiring_manager_email VARCHAR(50),
-//   hiring_manager_password VARCHAR(50),
-//   department VARCHAR(50)
+//   department VARCHAR(50),
+//   hiring_manager_password int
 // )`;
 
 
@@ -93,12 +93,13 @@ const connection = mysql.createConnection({
 
 
 // connection.query(createTablesQuery, (error, results, fields) => {
-//  if (error) {
-//    console.error("Error creating admin table: " + error.stack);
-//    return;
-//  }
-//  console.log("Table admin created successfully");
-// });
+//   if (error) {
+//     console.error("Error creating admin table: " + error.stack);
+//     return;
+//   }
+//   console.log("Table admin created successfully");
+//  });
+
 
 
   // const createTablesQuery = `
@@ -114,10 +115,9 @@ const connection = mysql.createConnection({
   // });
 
 
-//   const insertQuery = `INSERT INTO admin (hiring_manager_name, hiring_manager_email, department, hiring_manager_password) VALUES
-//   ('Veera Vardhan', 'veera123@gmail.com', 'Human Resources', '12345'),
-//   ('Ruthwik', 'Ruthwik1234@gmail.com', 'Digital team', '12345'),
-//   ('Nishant', 'Nishant1234@gmail.com', 'Human Resources', '12345')`;
+  // const insertQuery = `INSERT INTO admin (id,hiring_manager_name,hiring_manager_email,department,hiring_manager_password) VALUES (1,'Veera Vardhan','veera123@gmail.com','Human Resources',12345),
+  // (2,'Ruthwik','Ruthwik1234@gmail.com','Digital team',12345),
+  // (3,'Nishant','Nishant1234@gmail.com','Human Resources',12345)`;
 
 
 // const insertQuery = `INSERT INTO applicant_credentials (applicant_id,applicant_name,applicant_email,applicant_password,applicant_cv) VALUES (1,'Lavan kumar Adicherla','lavankumara2015@gmail.com','$2b$10$jHbHkRDGU/njrfcjJQS62ejaBvNPRQBVU3VS2baON8DdAYh.ZhV2S','C:\\fakepath\\1-MB (2).pdf')`;
