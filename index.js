@@ -7,6 +7,8 @@ const jwt = require("jsonwebtoken");
 const { hash, compare } = require("bcrypt");
 const TokenKey = "xyzzyx12345";
 const nodemailer = require("nodemailer");
+const fs = require('fs');
+const path = require('path');
 require("dotenv").config();
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
@@ -26,14 +28,13 @@ app.listen(3004, () => {
   console.log("Server is running at loc");
 });
 
-
-const connection = mysql.createConnection({
-  host: "bxwdallaour5ndfjyhra-mysql.services.clever-cloud.com",
-  database: "bxwdallaour5ndfjyhra",
-  user: "uykqbfs93zredemh",
-  password: "NawmScGm3OBBPMRUCfVw",
-  port: 3306,
-});
+// const connection = mysql.createConnection({
+//   host: "bxwdallaour5ndfjyhra-mysql.services.clever-cloud.com",
+//   database: "bxwdallaour5ndfjyhra",
+//   user: "uykqbfs93zredemh",
+//   password: "NawmScGm3OBBPMRUCfVw",
+//   port: 3306,
+// });
 
 
 
@@ -145,14 +146,13 @@ const connection = mysql.createConnection({
 // });
 
 
-//Database Connection
-// const connection = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",
-//   password: "122000",
-//   database: "cion_careers",
-// });
-
+// Database Connection
+const connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "122000",
+  database: "cion_careers",
+});
 connection.connect((err) => {
   if (err) {
     console.error("Error connecting to database: " + err.stack);
@@ -205,7 +205,7 @@ app.post("/applicant-login", (req, res) => {
         return res.status(500).send("Internal Server Error");
       }
       if (results.length === 0) {
-        return res.status(401).send({
+        return res.status(401).json({
           msg: "Email is not registered",
         });
       }
@@ -222,7 +222,7 @@ app.post("/applicant-login", (req, res) => {
           token: token,
         });
       } else {
-        return res.status(401).send({
+        return res.status(400).json({
           msg: "Invalid credentials",
         });
       }
@@ -383,8 +383,8 @@ app.get("/get-applicationProfileDetails", userAuthentication, (req, res) => {
 
 app.put('/update-profileDetails',(req,res)=>{
   try {
-    const {field, newValue, email} = req.body;
-    connection.query(`UPDATE applicant_details SET ${field}  = '${newValue}' WHERE applicant_email = '${email}'`,
+    const {field, newValue, applicant_email} = req.body;
+    connection.query(`UPDATE applicant_details SET ${field}  = '${newValue}' WHERE applicant_email = '${applicant_email}'`,
       (err, results) => {
         if(err){
           return res.status(500).send("Data Base Error");
@@ -545,6 +545,8 @@ app.post("/Submit-details", async (req, res) => {
     cv_uploaded,
     applicantRegisterDetails,
   } = req.body;
+
+  console.log(req.body)
 
   try {
     const hashedPassword = Password ? await hash(Password, 10) : null;
@@ -853,4 +855,89 @@ app.get("/get-SelectedApplicationDetails/:id", (req,res)=>{
           } catch (error) {
             res.status(400).json({message:"get application Details error"})
           }
-      })
+})
+
+//update CV Route
+app.put("/update-cv", async (req, res) => {
+  const { applicant_cv, email } = req.body;
+  
+  if (!applicant_cv || !email) {
+    return res.status(400).send({ message: "Invalid input" });
+  }
+  const query = `UPDATE applicant_credentials SET applicant_cv = ? WHERE applicant_email = ?`;
+  connection.query(query, [applicant_cv, email], (err, result) => {
+    if (err) {
+      console.error("Database Error:", err);
+      return res.status(500).send({ message: "Database Error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).send({ message: "Email not found" });
+    }
+
+    return res.status(200).send({ message: "Update Successful" });
+  });
+});
+
+
+
+
+
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.post('/handleCV', (req, res) => {
+    let data = [];
+    req.on('data', chunk => {
+        data.push(chunk);
+    });
+
+    req.on('end', () => {
+        const boundary = req.headers['content-type'].split('; ')[1].replace('boundary=', '');
+        const raw = Buffer.concat(data).toString();
+        const parts = raw.split(new RegExp(`--${boundary}`));
+        const filePart = parts.find(part => part.includes('Content-Disposition: form-data; name="cv"; filename='));
+
+        if (!filePart) {
+            return res.status(400).send({ message: "No file uploaded" });
+        }
+
+        const start = filePart.indexOf('\r\n\r\n') + 4;
+        const end = filePart.lastIndexOf('\r\n');
+        const fileContent = filePart.slice(start, end);
+
+        const buffer = Buffer.from(fileContent, 'binary');
+
+        const query = 'INSERT INTO handlecv (cv) VALUES (?)';
+        connection.query(query, [buffer], (err, result) => {
+            if (err) {
+                console.error("Database Error:", err);
+                return res.status(500).send({ message: "Database Error" });
+            } else {
+                console.log("CV uploaded successfully");
+                return res.status(200).json({ message: "CV uploaded successfully", data: result });
+            }
+        });
+    });
+});
+
+// Endpoint to retrieve and download the CV
+app.get('/downloadCV/:id', (req, res) => {
+    const cvId = req.params.id;
+
+    const query = 'SELECT cv FROM handlecv WHERE id = ?';
+    connection.query(query, [cvId], (err, results) => {
+        if (err) {
+            console.error("Database Error:", err);
+            return res.status(500).send({ message: "Database Error" });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).send({ message: "CV not found" });
+        }
+
+        const cvBuffer = results[0].cv;
+        res.setHeader('Content-Disposition', 'attachment; filename=cv.pdf');
+        res.setHeader('Content-Type', 'application/pdf');
+        res.send(cvBuffer);
+    });
+});
