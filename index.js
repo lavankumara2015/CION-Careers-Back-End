@@ -15,6 +15,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
+const multer = require('multer');
+const upload = multer({ limits: { fileSize: 50 * 1024 * 1024 } }); 
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 
 //CORS Error (Access-Control-Allow-Origin)
@@ -161,7 +165,6 @@ connection.connect((err) => {
   console.log("Connected to database as id " + connection.threadId);
 });
 
-
 //Middleware (userAuthentication)
 const userAuthentication = (request, response, next) => {
   try {
@@ -230,7 +233,7 @@ app.post("/applicant-login", (req, res) => {
   );
 });
 
-
+//add roleDetails route (to create new roles and insert)
 app.post("/add-roleDetails", (req, res) => {
   const {
     department,
@@ -269,7 +272,7 @@ app.post("/add-roleDetails", (req, res) => {
   );
 });
 
-
+// show all roleDetails in front-end (careers page)
 app.get("/show-roleDetails",  (req, res) => {
   connection.query(
     `SELECT * FROM careers WHERE status = 'Open' ORDER BY role_id DESC;`,
@@ -286,7 +289,7 @@ app.get("/show-roleDetails",  (req, res) => {
   );
 });
 
-
+//get roleDetails from db
 app.get("/get-JDDetails/:id", (req, res) => {
   const { id } = req.params;
   connection.query(
@@ -304,7 +307,7 @@ app.get("/get-JDDetails/:id", (req, res) => {
   );
 });
 
-
+// this route for insert into applicant_credentials
 app.post("/add_applicant-credentials", (req, res) => {
   const { applicant_name, applicant_email, applicant_password } = req.body;
   connection.query(
@@ -334,7 +337,7 @@ app.post("/add_applicant-credentials", (req, res) => {
   );
 });
 
-
+// this route for get applicationDetails form db
 app.get("/get-applicationDetails", userAuthentication, (req, res) => {
   try {
     const { email_id } = req;
@@ -357,7 +360,7 @@ app.get("/get-applicationDetails", userAuthentication, (req, res) => {
   }
 });
 
-
+// retrieve all application profile details 
 app.get("/get-applicationProfileDetails", userAuthentication, (req, res) => {
   try {
     const { email_id } = req;
@@ -380,7 +383,7 @@ app.get("/get-applicationProfileDetails", userAuthentication, (req, res) => {
   }
 });
 
-
+//applicant profile details updating route
 app.put('/update-profileDetails',(req,res)=>{
   try {
     const {field, newValue, applicant_email} = req.body;
@@ -459,6 +462,7 @@ function sendEmail({ recipient_email, OTP }) {
   });
 }
 
+// retrieve applicant credentials and if its match change password like forgot password route 
 app.post("/applicant_forgot_Password", (req, res) => {
   const { recipient_email, OTP } = req.body;
   connection.query(
@@ -491,7 +495,7 @@ app.post("/applicant_verifyEmail", async (req, res) => {
   }
 });
 
-
+// set applicant password route ( set new password)
 app.put("/applicantSetNewPassword", async (req, res) => {
   try {
     const { applicant_emailID } = req.body;
@@ -514,7 +518,7 @@ app.put("/applicantSetNewPassword", async (req, res) => {
   }
 });
 
-
+// get additions details like  retrieve existing data of applicant
 app.post("/get-additional-details", (req, res) => {
   const { email } = req.body;
   connection.query(
@@ -536,17 +540,18 @@ app.post("/get-additional-details", (req, res) => {
   );
 });
 
-
-app.post("/Submit-details", async (req, res) => {
+// all applicant register details insert into data base 
+app.post("/Submit-details", upload.single('cv_uploaded'), async (req, res) => {
   const {
     email,
     Password,
     reasonForApplying,
-    cv_uploaded,
     applicantRegisterDetails,
   } = req.body;
+  const cvFile = req.file;
 
-  console.log(req.body)
+  console.log(req.body);
+  console.log(cvFile , "cvvvvvvvvvvv");
 
   try {
     const hashedPassword = Password ? await hash(Password, 10) : null;
@@ -622,7 +627,7 @@ app.post("/Submit-details", async (req, res) => {
 
             connection.query(
               insertApplicantCredentialsQuery,
-              [`${firstname} ${lastname}`, email, hashedPassword, cv_uploaded],
+              [`${firstname} ${lastname}`, email, hashedPassword, cvFile.buffer],
               (err, results) => {
                 if (err) {
                   console.error("Error executing applicant credentials query:", err);
@@ -644,7 +649,7 @@ app.post("/Submit-details", async (req, res) => {
             const token = jwt.sign(payload, TokenKey, { expiresIn: "1h" });
 
             const updateCVQuery = `UPDATE applicant_credentials SET applicant_cv = ? WHERE applicant_email = ?`;
-            connection.query(updateCVQuery, [cv_uploaded, email], (err, result) => {
+            connection.query(updateCVQuery, [cvFile.buffer, email], (err, result) => {
               if (err) {
                 console.error("Error updating CV:", err);
                 return res.status(500).json({ message: "CV update failed" });
@@ -664,7 +669,7 @@ app.post("/Submit-details", async (req, res) => {
   }
 });
 
-
+// get all applicant details based on hiring manager details
 app.get("/get-adminDashboard-data/:email", async (req, res) => {
   const { email } = req.params;
   try {
@@ -686,7 +691,7 @@ app.get("/get-adminDashboard-data/:email", async (req, res) => {
       if (hrDetail.department === "Human Resources") {
         const getAllDetails = await new Promise((resolve, reject) => {
           connection.query(
-            'SELECT * FROM applicant_details',
+            'SELECT b.*, a.applicant_cv FROM applicant_credentials AS a INNER JOIN applicant_details AS b ON a.applicant_email = b.applicant_email',
             (err, result) => {
               if (err) {
                 return reject(err);
@@ -722,11 +727,10 @@ app.get("/get-adminDashboard-data/:email", async (req, res) => {
   }
 });
 
-
+//get all roles data filtered by email (manager email)
 app.get("/get-careers_data-table/:email", async (req, res) => {
   try {
     const { email } = req.params;
-
     const hrDetail = await new Promise((resolve, reject) => {
       connection.query(
         `SELECT * FROM admin WHERE hiring_manager_email = ?`,
@@ -839,7 +843,7 @@ app.post("/admin-login",async (req, res) => {
   });
 });
 
-
+// selected particular role details by this route 
 app.get("/get-SelectedApplicationDetails/:id", (req,res)=>{
   try {
     const {id} = req.params;
@@ -858,14 +862,17 @@ app.get("/get-SelectedApplicationDetails/:id", (req,res)=>{
 })
 
 //update CV Route
-app.put("/update-cv", async (req, res) => {
-  const { applicant_cv, email } = req.body;
+app.put("/update-cv", upload.single('cv'), (req, res) => {
+  const { email } = req.body;
   
-  if (!applicant_cv || !email) {
+  if (!req.file || !email) {
     return res.status(400).send({ message: "Invalid input" });
   }
+
+  const buffer = req.file.buffer;
   const query = `UPDATE applicant_credentials SET applicant_cv = ? WHERE applicant_email = ?`;
-  connection.query(query, [applicant_cv, email], (err, result) => {
+
+  connection.query(query, [buffer, email], (err, result) => {
     if (err) {
       console.error("Database Error:", err);
       return res.status(500).send({ message: "Database Error" });
@@ -879,65 +886,26 @@ app.put("/update-cv", async (req, res) => {
   });
 });
 
+// download the CV
+app.get('/downloadCV/:email', (req, res) => {
+  const cvId = req.params.email;
 
+  console.log(cvId)
 
+  const query = 'SELECT applicant_cv FROM applicant_credentials WHERE applicant_email = ?';
+  connection.query(query, [cvId], (err, results) => {
+      if (err) {
+          console.error("Database Error:", err);
+          return res.status(500).send({ message: "Database Error" });
+      }
+      
+      if (results.length === 0) {
+          return res.status(404).send({ message: "CV not found" });
+      }
 
-
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.post('/handleCV', (req, res) => {
-    let data = [];
-    req.on('data', chunk => {
-        data.push(chunk);
-    });
-
-    req.on('end', () => {
-        const boundary = req.headers['content-type'].split('; ')[1].replace('boundary=', '');
-        const raw = Buffer.concat(data).toString();
-        const parts = raw.split(new RegExp(`--${boundary}`));
-        const filePart = parts.find(part => part.includes('Content-Disposition: form-data; name="cv"; filename='));
-
-        if (!filePart) {
-            return res.status(400).send({ message: "No file uploaded" });
-        }
-
-        const start = filePart.indexOf('\r\n\r\n') + 4;
-        const end = filePart.lastIndexOf('\r\n');
-        const fileContent = filePart.slice(start, end);
-
-        const buffer = Buffer.from(fileContent, 'binary');
-
-        const query = 'INSERT INTO handlecv (cv) VALUES (?)';
-        connection.query(query, [buffer], (err, result) => {
-            if (err) {
-                console.error("Database Error:", err);
-                return res.status(500).send({ message: "Database Error" });
-            } else {
-                console.log("CV uploaded successfully");
-                return res.status(200).json({ message: "CV uploaded successfully", data: result });
-            }
-        });
-    });
-});
-
-// Endpoint to retrieve and download the CV
-app.get('/downloadCV/:id', (req, res) => {
-    const cvId = req.params.id;
-
-    const query = 'SELECT cv FROM handlecv WHERE id = ?';
-    connection.query(query, [cvId], (err, results) => {
-        if (err) {
-            console.error("Database Error:", err);
-            return res.status(500).send({ message: "Database Error" });
-        }
-        
-        if (results.length === 0) {
-            return res.status(404).send({ message: "CV not found" });
-        }
-
-        const cvBuffer = results[0].cv;
-        res.setHeader('Content-Disposition', 'attachment; filename=cv.pdf');
-        res.setHeader('Content-Type', 'application/pdf');
-        res.send(cvBuffer);
-    });
+      const cvBuffer = results[0].applicant_cv;
+      res.setHeader('Content-Disposition', 'attachment; filename=cv.pdf');
+      res.setHeader('Content-Type', 'application/pdf');
+      res.send(cvBuffer);
+  });
 });
